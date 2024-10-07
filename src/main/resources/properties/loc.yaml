@@ -1,13 +1,17 @@
 api:
-  id: "123"
+  id: "19990332"
   listener:
     path: "/*"
 
 http:
   listener:
     host: "0.0.0.0"
-    port: "8091" 
+    port: "8094" 
 
 csv:
+  host: "ftp.drivehq.com"
+  port: "21"
+  username: "demo-mule"
+  password: ${secure::ftp-secure.password}
   
     

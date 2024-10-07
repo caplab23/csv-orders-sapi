@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="1810d614-ca95-40e2-a161-5a387a234368" >
 		<http:listener-connection host="${http.listener.host}" port="${http.listener.port}" />
 	</http:listener-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="7c770fc9-41cf-465a-9334-956ff03fc1f9" file="properties/${mule.env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="3ba27854-fc12-443c-a196-343f553ecddf" name="mule.env" value="loc" />
+	<ftp:config name="FTP_Config" doc:name="FTP Config" doc:id="13fdbb1e-1bad-4dbb-bf75-ad02198a86fa" >
+		<ftp:connection host="${csv.host}" port="${csv.port}" username="${csv.username}" password="${csv.password}"/>
+	</ftp:config>
+	<global-property doc:name="Global Property" doc:id="ccf62a7e-6206-4342-8011-cf4df044aa4d" name="mule.secure.key" value="democap" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="6d79e8c4-6d5f-46fe-be76-194b45270ed5" file="properties/${mule.env}.secure.yaml" key="${mule.secure.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="782d562d-adca-4c8c-88e4-ff02ae351fe0" flowRef="sapi-orders-adhetec-main" />
 </mule>

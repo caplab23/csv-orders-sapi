@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="post-csv-orders-sapiFlow" doc:id="1cc1864b-12aa-4226-9097-3bd008d22e95" >
-		<http:listener doc:name="Listener" doc:id="fc9301b3-4d91-4c52-8bf5-6eeaa7f1c093" config-ref="HTTP_Listener_config" path="/orders"/>
-		<ee:transform doc:name="hello" doc:id="bdb1de7b-30a5-4a1e-b8fc-cfa7f438c4e8" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message": "hello"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</flow>
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd">
+	<sub-flow name="Post_orders_csv" doc:id="4fca67ae-d744-48e4-a60e-58161615761c" >
+		<logger level="INFO" doc:name="START" doc:id="c80c8974-70fa-4e67-8e98-0669bf8494d7" message='" START post-csv-orders-sapiFlow"' />
+		<set-variable value="#[payload.orderId]" doc:name="orderId" doc:id="7a4b149b-f646-4b21-8c6e-d760ad0b02c0" variableName="orderId" />
+		<ftp:write doc:name="post-on-driverHQ" doc:id="42c88f6d-7944-49c7-a8eb-126ed7ed53f4" config-ref="FTP_Config" path='#["po-" ++ vars.orderId ++ ".csv"]' />
+		<logger level="INFO" doc:name="END" doc:id="cfad140d-aa82-4745-a1f9-b05919a03611" message='" END post-csv-orders-sapiFlow"' />
+	</sub-flow>
 </mule>

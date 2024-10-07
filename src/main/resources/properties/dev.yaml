@@ -1,5 +1,5 @@
 api:
-  id: "123"
+  id: "19990332"
   listener:
     path: "/*"
 
@@ -9,5 +9,9 @@ http:
     port: "8091" 
 
 csv:
+  host: "ftp.drivehq.com"
+  port: "21"
+  username: "demo-mule"
+  password: ${secure::ftp-secure.password}
   
     
