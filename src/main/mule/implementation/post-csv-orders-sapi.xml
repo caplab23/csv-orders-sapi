@@ -9,7 +9,15 @@ http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/
 	<sub-flow name="Post_orders_csv" doc:id="4fca67ae-d744-48e4-a60e-58161615761c" >
 		<logger level="INFO" doc:name="START" doc:id="c80c8974-70fa-4e67-8e98-0669bf8494d7" message='" START post-csv-orders-sapiFlow"' />
 		<set-variable value="#[payload.orderId]" doc:name="orderId" doc:id="7a4b149b-f646-4b21-8c6e-d760ad0b02c0" variableName="orderId" />
-		<ftp:write doc:name="post-on-driverHQ" doc:id="42c88f6d-7944-49c7-a8eb-126ed7ed53f4" config-ref="FTP_Config" path='#["po-" ++ vars.orderId ++ ".csv"]' />
+		<until-successful maxRetries="5" doc:name="Until Successful" doc:id="e3404f6e-07cc-4bae-b04b-a680f856bd50" millisBetweenRetries="5000">
+			<ftp:write doc:name="post-on-driverHQ" doc:id="42c88f6d-7944-49c7-a8eb-126ed7ed53f4" config-ref="FTP_Config" path='#["po-" ++ vars.orderId ++ ".csv"]'>
+			<reconnect frequency="1000"/>
+				<ftp:content ><![CDATA[#[%dw 2.0
+output application/csv quoteValues=true
+---
+payload.products]]]></ftp:content>
+		</ftp:write>
+		</until-successful>
 		<logger level="INFO" doc:name="END" doc:id="cfad140d-aa82-4745-a1f9-b05919a03611" message='" END post-csv-orders-sapiFlow"' />
 	</sub-flow>
 </mule>
